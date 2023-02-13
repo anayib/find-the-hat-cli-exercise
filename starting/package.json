@@ -1,0 +1,11 @@
+{
+  "name": "get-the-hat",
+  "version": "1.0.0",
+  "description": "CLI Game",
+  "main": "main.js",
+  "author": "Nayib - CA",
+  "license": "ISC",
+  "dependencies": {
+    "prompt-sync": "^4.1.7"
+  }
+}
