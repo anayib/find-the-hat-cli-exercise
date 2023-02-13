@@ -15,12 +15,14 @@ class Field {
   }
 
   print () {
-    console.log(`${this.field.toString().replace(/,/g, "")}`)
+    this.field.forEach(array => {
+        console.log(`${array.toString().replace(/,/g, "")}`);
+    });
   }
 
   askForDirection () {
     readline.question(
-      `Which direction would you like to move?`, 
+      `Which direction would you like to move?\n`, 
       (direction) => {
           this.moveTodirection = direction;
           if (direction === "stop") {
@@ -34,65 +36,68 @@ class Field {
       )
     }
     
-    generateField (height, width, percentageHoles) {
-
-      let ramdomPosition = () => {
-        let position = Math.floor(Math.random()*((characters.length - 1) + 1))
-        return position;
+    generateField (width, height, percentageHoles) { 
+      let field = [];
+      let hatPossition = [];
+      let numberOfHoles = Math.floor(height*width*percentageHoles)
+      let randomPosition = () => {
+        let index1 = Math.floor(Math.random()*((width - 1) + 1));
+        let index2 = Math.floor(Math.random()*((height - 1) + 1));
+        return [index1, index2];
       };
-        let characters = Array((height*width));
-        let numberOfHoles = Math.floor(height*width*percentageHoles)
-        characters.splice(0, 1, pathCharacter);
-        
-        for (let j = 0; j < numberOfHoles ; j+= 1) { 
-          let inserted =  false
-          while (inserted === false ) {
-            let position = ramdomPosition();
-            if (characters[position] === undefined ) {
-               characters.splice(position, 1, hole)
+      // creates field
+      for (var i = 0; i < width; i++) {
+        var innerArray = [];
+        for (var j = 0; j < height; j++) {
+          innerArray.push(fieldCharacter);
+        }
+        field.push(innerArray);
+      };
+      // insert path character
+      field[0].splice(0, 1, pathCharacter);
+      // insert hat
+      do {
+        hatPossition = randomPosition();
+      } while (hatPossition === [0,0]);
+
+      field[hatPossition[0]].splice(hatPossition[1], 1, hat)
+      // insert wholes
+      for (let j = 0; j < numberOfHoles; j += 1) {
+        let inserted = false;
+        while (inserted === false ) {
+            let position = randomPosition();
+            if (field[position[0]][position[1]] === fieldCharacter ) {
+               field[position[0]].splice(position[1], 1, hole)
                inserted = true;
             }
           }
-        }
 
-        for (let i = 0; i < characters.length - 1; i+= 1) {
-          if (characters[i] === undefined) {
-            characters[i] = fieldCharacter
-          }
-        }
-         
-        for (let i = 1; i < characters.length; i+= 1) {
-          let position =  ramdomPosition();
-          if (characters[position] === fieldCharacter ) {
-              characters[position] = hat
-              break
-          }
-        }
-        this.field = characters;
-        return characters;
+      }
+      this.field = field;
+      return;
     }
     
     updateField(direction) {
       /*
         get current pathCahracterPosition
+      */
+     /*
         if current moveToDirection "r"
         else if current moveToDirection "l"
         else if current moveToDirection "u"
         else if current moveToDirection "d" 
       */
-
-        this.field = "cerveza"
-        return;
-     }
+     return;
+    }
 
   start () {
-      this.print();
       this.askForDirection();
+      this.updateField();
     }
   };
 
 
 
 let firstField = new Field([])
-firstField.generateField(20,20, 0.3);
+firstField.generateField(5,4, 0.25);
 firstField.start();
